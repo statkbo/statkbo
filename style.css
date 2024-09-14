@@ -12,10 +12,11 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    table-layout: auto;  /* 열 크기를 컨텐츠에 맞추도록 설정 */
-    min-width: 1500px;  /* 테이블의 최소 너비 설정 */
+    table-layout: fixed;  /* 열의 크기를 고정하여 설정 */
+    min-width: 1200px;  /* 테이블의 최소 너비 설정 */
 }
 
+/* 각 열에 맞는 최소 너비 설정 */
 th, td {
     border: 1px solid #ddd;
     padding: 10px;
@@ -24,12 +25,45 @@ th, td {
     white-space: nowrap;  /* 텍스트가 줄바꿈 없이 한 줄로 표시 */
 }
 
-th {
-    background-color: #f2f2f2;
-    cursor: pointer;
-    min-width: 150px;  /* 각 열의 최소 너비를 넉넉하게 설정 */
+/* 열 너비 조정 */
+th[data-column="Pos"], td[data-column="Pos"] {
+    min-width: 80px;  /* 포지션 열 */
 }
 
+th[data-column="wRC"], td[data-column="wRC"],
+th[data-column="WAR"], td[data-column="WAR"],
+th[data-column="offWAR"], td[data-column="offWAR"],
+th[data-column="atBats"], td[data-column="atBats"],
+th[data-column="plateAppearances"], td[data-column="plateAppearances"],
+th[data-column="hits"], td[data-column="hits"],
+th[data-column="doubles"], td[data-column="doubles"],
+th[data-column="triples"], td[data-column="triples"],
+th[data-column="homeRuns"], td[data-column="homeRuns"],
+th[data-column="walks"], td[data-column="walks"],
+th[data-column="hitByPitch"], td[data-column="hitByPitch"],
+th[data-column="sacFlies"], td[data-column="sacFlies"],
+th[data-column="sacBunts"], td[data-column="sacBunts"],
+th[data-column="intentionalWalks"], td[data-column="intentionalWalks"],
+th[data-column="strikeouts"], td[data-column="strikeouts"],
+th[data-column="doublePlays"], td[data-column="doublePlays"],
+th[data-column="steals"], td[data-column="steals"],
+th[data-column="caughtStealing"], td[data-column="caughtStealing"],
+th[data-column="runs"], td[data-column="runs"],
+th[data-column="rbis"], td[data-column="rbis"],
+th[data-column="avg"], td[data-column="avg"],
+th[data-column="obp"], td[data-column="obp"],
+th[data-column="slg"], td[data-column="slg"],
+th[data-column="ops"], td[data-column="ops"],
+th[data-column="wOBA"], td[data-column="wOBA"],
+th[data-column="wRAA"], td[data-column="wRAA"],
+th[data-column="wSB"], td[data-column="wSB"],
+th[data-column="spd"], td[data-column="spd"],
+th[data-column="ubr"], td[data-column="ubr"],
+th[data-column="PosAdj"], td[data-column="PosAdj"] {
+    min-width: 60px;  /* 작은 열들 */
+}
+
+/* 포지션별 필터 및 일반 필터 스타일 */
 .filter-container {
     margin-bottom: 20px;
 }
@@ -38,4 +72,32 @@ th {
 .filter-container input {
     padding: 5px;
     margin-right: 10px;
+}
+
+/* 모바일 환경에 대한 스타일 */
+@media screen and (max-width: 768px) {
+    body {
+        margin: 10px;
+    }
+    
+    th, td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .filter-container {
+        font-size: 14px;
+    }
+    
+    .filter-container select, 
+    .filter-container input {
+        padding: 4px;
+        margin-right: 5px;
+        font-size: 12px;
+    }
+
+    /* 작은 화면일 때 테이블의 최소 너비 조정 */
+    table {
+        min-width: 800px;  /* 모바일에서 스크롤을 최소화하도록 조정 */
+    }
 }
