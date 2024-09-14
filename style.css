@@ -4,7 +4,7 @@ body {
 }
 
 .table-wrapper {
-    overflow-x: auto;  /* 좌우 스크롤 가능 */
+    overflow-x: auto;  /* 테이블이 화면을 넘으면 가로 스크롤 */
     max-width: 100%;   /* 부모 요소의 폭을 넘지 않도록 설정 */
 }
 
@@ -12,28 +12,22 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    min-width: 1000px;  /* 테이블의 최소 너비를 지정하여 스크롤 발생 */
+    table-layout: auto;  /* 열 크기를 컨텐츠에 맞추도록 설정 */
+    min-width: 1500px;  /* 테이블의 최소 너비 설정 */
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 10px;
     text-align: center;
-    font-size: 12px;
-    white-space: nowrap;  /* 글자가 한 줄에 나오게 설정 */
+    font-size: 14px;
+    white-space: nowrap;  /* 텍스트가 줄바꿈 없이 한 줄로 표시 */
 }
 
 th {
     background-color: #f2f2f2;
     cursor: pointer;
-}
-
-th.sorted-asc::after {
-    content: "▲";
-}
-
-th.sorted-desc::after {
-    content: "▼";
+    min-width: 150px;  /* 각 열의 최소 너비를 넉넉하게 설정 */
 }
 
 .filter-container {
