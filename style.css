@@ -42,7 +42,7 @@ h1 {
     margin: 0 auto;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    table-layout: fixed; /* 열 너비 고정 */
+    table-layout: auto; /* 열 너비 자동 조정 */
 }
 
 #statsTable th, #statsTable td {
@@ -57,7 +57,6 @@ h1 {
 #statsTable th {
     background-color: #f4f4f4;
     cursor: pointer;
-    min-width: 100px; /* 최소 너비 설정 */
 }
 
 #statsTable th.sorted-asc::after {
@@ -80,5 +79,13 @@ h1 {
     .filter-container label, .filter-container select, .filter-container input {
         margin-bottom: 10px;
         margin-right: 0;
+    }
+    
+    #statsTable {
+        font-size: 14px; /* 모바일 화면에서 텍스트 크기 조정 */
+    }
+
+    #statsTable th, #statsTable td {
+        padding: 8px;
     }
 }
