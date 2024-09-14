@@ -42,17 +42,22 @@ h1 {
     margin: 0 auto;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    table-layout: fixed; /* 열 너비 고정 */
 }
 
 #statsTable th, #statsTable td {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 넘치는 텍스트를 생략 부호로 표시 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 #statsTable th {
     background-color: #f4f4f4;
     cursor: pointer;
+    min-width: 100px; /* 최소 너비 설정 */
 }
 
 #statsTable th.sorted-asc::after {
