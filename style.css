@@ -64,15 +64,13 @@ main {
     padding: 10px;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
 }
 
-/* 테이블 스타일 */
 #statsTable {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
-    table-layout: fixed; /* 열 너비 고정 */
+    table-layout: auto; /* 열 너비 자동 조정 */
 }
 
 #statsTable th, #statsTable td {
@@ -103,7 +101,7 @@ main {
 @media (max-width: 768px) {
     .filter-container {
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-start;
         top: 50px; /* 모바일 화면에서 상단 여백 조정 */
     }
 
@@ -111,19 +109,10 @@ main {
         margin-bottom: 10px;
         margin-right: 0;
     }
-
-    main {
-        margin-top: 90px; /* 필터의 높이만큼 여백 추가 */
-    }
-
+    
     #statsTable {
         font-size: 14px; /* 모바일 화면에서 텍스트 크기 조정 */
     }
-
-    #statsTable th, #statsTable td {
-        padding: 8px;
-    }
-}
 
     #statsTable th, #statsTable td {
         padding: 8px;
