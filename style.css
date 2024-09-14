@@ -44,17 +44,19 @@ h1 {
     border-radius: 3px;
 }
 
+/* 테이블을 감싸는 컨테이너 */
 .table-wrapper {
     overflow-x: auto; /* 가로 스크롤 활성화 */
     margin: 0 auto;
     padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 #statsTable {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     table-layout: auto; /* 열 너비 자동 조정 */
 }
 
