@@ -13,7 +13,7 @@ table {
     border-collapse: collapse;
     margin-top: 20px;
     table-layout: fixed;  /* 열의 크기를 고정하여 설정 */
-    min-width: 1200px;  /* 테이블의 최소 너비 설정 */
+    min-width: 1000px;  /* 테이블의 최소 너비 설정 */
 }
 
 /* 각 열에 맞는 최소 너비 설정 */
@@ -60,18 +60,22 @@ th[data-column="wSB"], td[data-column="wSB"],
 th[data-column="spd"], td[data-column="spd"],
 th[data-column="ubr"], td[data-column="ubr"],
 th[data-column="PosAdj"], td[data-column="PosAdj"] {
-    min-width: 60px;  /* 작은 열들 */
+    max-width: 100px;  /* 열의 최대 너비 설정 */
 }
 
 /* 포지션별 필터 및 일반 필터 스타일 */
 .filter-container {
     margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;  /* 필터 항목 사이의 간격 */
 }
 
 .filter-container select, 
 .filter-container input {
     padding: 5px;
     margin-right: 10px;
+    font-size: 14px;
 }
 
 /* 모바일 환경에 대한 스타일 */
@@ -86,7 +90,7 @@ th[data-column="PosAdj"], td[data-column="PosAdj"] {
     }
 
     .filter-container {
-        font-size: 14px;
+        font-size: 12px;
     }
     
     .filter-container select, 
