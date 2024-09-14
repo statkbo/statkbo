@@ -1,110 +1,79 @@
+/* style.css */
+
+/* 전체 페이지 기본 스타일 */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
-.table-wrapper {
-    overflow-x: auto;  /* 테이블이 화면을 넘으면 가로 스크롤 */
-    max-width: 100%;   /* 부모 요소의 폭을 넘지 않도록 설정 */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto;  /* 열 너비 자동 조정 */
-    min-width: 600px;  /* 최소 너비 조정 */
-}
-
-/* 각 열에 맞는 최소 너비 설정 */
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+h1 {
     text-align: center;
-    font-size: 14px;
-    white-space: nowrap;  /* 텍스트가 줄바꿈 없이 한 줄로 표시 */
+    margin: 20px 0;
 }
 
-/* 열 너비 조정 */
-th[data-column="Pos"], td[data-column="Pos"] {
-    min-width: 60px;  /* 포지션 열 */
-}
-
-th[data-column="wRC"], td[data-column="wRC"],
-th[data-column="WAR"], td[data-column="WAR"],
-th[data-column="offWAR"], td[data-column="offWAR"],
-th[data-column="atBats"], td[data-column="atBats"],
-th[data-column="plateAppearances"], td[data-column="plateAppearances"],
-th[data-column="hits"], td[data-column="hits"],
-th[data-column="doubles"], td[data-column="doubles"],
-th[data-column="triples"], td[data-column="triples"],
-th[data-column="homeRuns"], td[data-column="homeRuns"],
-th[data-column="walks"], td[data-column="walks"],
-th[data-column="hitByPitch"], td[data-column="hitByPitch"],
-th[data-column="sacFlies"], td[data-column="sacFlies"],
-th[data-column="sacBunts"], td[data-column="sacBunts"],
-th[data-column="intentionalWalks"], td[data-column="intentionalWalks"],
-th[data-column="strikeouts"], td[data-column="strikeouts"],
-th[data-column="doublePlays"], td[data-column="doublePlays"],
-th[data-column="steals"], td[data-column="steals"],
-th[data-column="caughtStealing"], td[data-column="caughtStealing"],
-th[data-column="runs"], td[data-column="runs"],
-th[data-column="rbis"], td[data-column="rbis"],
-th[data-column="avg"], td[data-column="avg"],
-th[data-column="obp"], td[data-column="obp"],
-th[data-column="slg"], td[data-column="slg"],
-th[data-column="ops"], td[data-column="ops"],
-th[data-column="wOBA"], td[data-column="wOBA"],
-th[data-column="wRAA"], td[data-column="wRAA"],
-th[data-column="wSB"], td[data-column="wSB"],
-th[data-column="spd"], td[data-column="spd"],
-th[data-column="ubr"], td[data-column="ubr"],
-th[data-column="PosAdj"], td[data-column="PosAdj"] {
-    min-width: 50px;  /* 작은 열들 */
-}
-
-/* 포지션별 필터 및 일반 필터 스타일 */
 .filter-container {
-    margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;  /* 필터 항목 사이의 간격 */
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.filter-container select, 
-.filter-container input {
-    padding: 5px;
+.filter-container label {
     margin-right: 10px;
-    font-size: 14px;
+    font-weight: bold;
 }
 
-/* 모바일 환경에 대한 스타일 */
-@media screen and (max-width: 768px) {
-    body {
-        margin: 10px;
-    }
-    
-    th, td {
-        padding: 6px;
-        font-size: 12px;
-    }
+.filter-container select, .filter-container input {
+    margin-right: 20px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
 
+#statsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#statsTable th, #statsTable td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#statsTable th {
+    background-color: #f4f4f4;
+    cursor: pointer;
+}
+
+#statsTable th.sorted-asc::after {
+    content: '▲';
+    margin-left: 5px;
+}
+
+#statsTable th.sorted-desc::after {
+    content: '▼';
+    margin-left: 5px;
+}
+
+/* 모바일 화면을 위한 반응형 디자인 */
+@media (max-width: 768px) {
     .filter-container {
-        font-size: 12px;
         flex-direction: column;
+        align-items: flex-start;
     }
 
-    .filter-container select, 
-    .filter-container input {
-        padding: 4px;
-        margin-right: 0;
+    .filter-container label, .filter-container select, .filter-container input {
         margin-bottom: 10px;
-        font-size: 12px;
-        width: 100%;
-    }
-
-    /* 작은 화면일 때 테이블의 최소 너비 조정 */
-    table {
-        min-width: 100%;  /* 모바일에서 가로 스크롤을 사용하여 전체 너비 표시 */
+        margin-right: 0;
     }
 }
