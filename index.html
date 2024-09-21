@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stats.KBO</title>
+    <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
+</head>
+<body>
+
+    <h1>
+        <img src="https://raw.githubusercontent.com/statkbo/statkbo/main/logo.png" alt="stats.KBO Logo" style="vertical-align: middle; height: 1.2em;">
+        <span style="font-size: 10px; color: #666; margin-left: 10px;">( 선수 성적 저작권 문제 시 삭제 )</span>
+    </h1>
+
+    <div class="filter-container">
+        <label for="playerTypeFilter">투/타:</label>
+        <select id="playerTypeFilter">
+            <option value="타자">타자</option>
+            <option value="투수">투수</option>
+        </select>
+
+        <label for="teamFilter">팀:</label>
+        <select id="teamFilter">
+            <option value="">All</option>
+            <option value="Landers (KBO)">Landers (KBO)</option>
+            <option value="Wiz (KBO)">Wiz (KBO)</option>
+            <option value="Twins (KBO)">Twins (KBO)</option>
+            <option value="Heroes (KBO)">Heroes (KBO)</option>
+            <option value="Bears (KBO)">Bears (KBO)</option>
+            <option value="Eagles (KBO)">Eagles (KBO)</option>
+            <option value="Lions (KBO)">Lions (KBO)</option>
+            <option value="Dinos (KBO)">Dinos (KBO)</option>
+            <option value="Giants (KBO)">Giants (KBO)</option>
+            <option value="Tigers (KBO)">Tigers (KBO)</option>
+        </select>
+
+        <label for="PosFilter" id="posFilterLabel">포지션:</label>
+        <select id="PosFilter">
+            <option value="">All</option>
+            <option value="포수">C</option>
+            <option value="1루">1B</option>
+            <option value="2루">2B</option>
+            <option value="3루">3B</option>
+            <option value="유격">SS</option>
+            <option value="좌익">LF</option>
+            <option value="중견">CF</option>
+            <option value="우익">RF</option>
+            <option value="지명">DH</option>
+        </select>
+
+        <label for="plateAppearancesFilter">타석 수:</label>
+        <input type="number" id="plateAppearancesFilter" value="300" placeholder="Enter minimum PA">
+
+        <label for="nameSearch">선수 이름:</label>
+        <input type="text" id="nameSearch" placeholder="Search by name">
+    </div>
+
+    <main>
+        <div class="table-wrapper">
+            <table id="statsTable">
+                <thead id="tableHeader">
+                    <!-- 기본으로 타자 테이블 헤더를 표시 -->
+                    <tr class="batter-header">
+                        <th>이름</th>
+                        <th>팀</th>
+                        <th>포지션</th>
+                        <th>wRC+</th>
+                        <th>WAR*</th>
+                        <th>offWAR</th>
+                        <th>타수</th>
+                        <th>타석</th>
+                        <th>안타</th>
+                        <th>2루타</th>
+                        <th>3루타</th>
+                        <th>홈런</th>
+                        <th>4구(고4X)</th>
+                        <th>사구</th>
+                        <th>희비</th>
+                        <th>희번</th>
+                        <th>고4</th>
+                        <th>삼진</th>
+                        <th>병살</th>
+                        <th>도루</th>
+                        <th>도루실패</th>
+                        <th>득점</th>
+                        <th>타점</th>
+                        <th>타율</th>
+                        <th>출루율</th>
+                        <th>장타율</th>
+                        <th>OPS</th>
+                        <th>wOBA</th>
+                        <th>wRAA</th>
+                        <th>wSB</th>
+                        <th>Spd</th>
+                        <th>추정UBR</th>
+                        <th>Pos</th>
+                    </tr>
+                    <!-- 투수 테이블 헤더 -->
+                    <tr class="pitcher-header" style="display: none;">
+                        <th>이름</th>
+                        <th>팀</th>
+                        <th>fWAR</th>
+                        <th>(RA9+f)/2 WAR</th>
+                        <th>이닝</th>
+                        <th>실점</th>
+                        <th>자책점</th>
+                        <th>삼진</th>
+                        <th>피안타</th>
+                        <th>4구</th>
+                        <th>사구</th>
+                        <th>피홈런</th>
+                        <th>승</th>
+                        <th>패</th>
+                        <th>홀</th>
+                        <th>세</th>
+                        <th>ERA</th>
+                        <th>FIP</th>
+                        <th>ERA+</th>
+                        <th>FIP+</th>
+                        <th>WHIP</th>
+                        <th>K/9</th>
+                        <th>BB/9</th>
+                        <th>K/BB</th>
+                        <th>HR/9</th>
+                        <th>RA9</th>
+                        <th>WIN%</th>
+                        <th>ERA-WAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 데이터가 로드된 후 여기에 추가됩니다. -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('playerTypeFilter').addEventListener('change', function() {
+            loadCSV(this.value);
+            togglePosFilter(this.value);
+        });
+
+        function loadCSV(playerType) {
+            let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.trim().split('\n');
+                    const tableHeader = document.getElementById('tableHeader');
+                    const tbody = document.querySelector('#statsTable tbody');
+
+                    // 테이블 헤더 전환
+                    if (playerType === '타자') {
+                        tableHeader.querySelector('.batter-header').style.display = '';
+                        tableHeader.querySelector('.pitcher-header').style.display = 'none';
+                    } else {
+                        tableHeader.querySelector('.batter-header').style.display = 'none';
+                        tableHeader.querySelector('.pitcher-header').style.display = '';
+                    }
+
+                    tbody.innerHTML = ''; // 기존 테이블 데이터 삭제
+
+                    // CSV 데이터 파싱
+                    for (let i = 1; i < lines.length; i++) {
+                        const row = lines[i].split(',');
+                        const tr = document.createElement('tr');
+
+                        row.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+
+                        tbody.appendChild(tr);
+                    }
+                });
+        }
+
+        function togglePosFilter(playerType) {
+            const posFilter = document.getElementById('posFilterLabel');
+            const posFilterSelect = document.getElementById('PosFilter');
+
+            if (playerType === '타자') {
+                posFilter.style.display = '';
+                posFilterSelect.style.display = '';
+            } else {
+                posFilter.style.display = 'none';
+                posFilterSelect.style.display = 'none';
+            }
+        }
+
+        // 초기화 시 기본 '타자' 데이터 로드
+        loadCSV('타자');
+    </script>
+
+</body>
+</html>
