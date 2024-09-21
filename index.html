@@ -1,58 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>stats.KBO</title>
+    <title>KBO Stats</title>
     <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
-    <style>
-        .filter-container {
-            margin-bottom: 20px; /* 필터와 테이블 사이의 간격 */
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-container label {
-            margin-right: 5px;
-        }
-
-        .filter-container select, .filter-container input {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: right;
-        }
-
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        th.sorted-asc::after {
-            content: ' ▲';
-        }
-
-        th.sorted-desc::after {
-            content: ' ▼';
-        }
-    </style>
 </head>
 <body>
 
@@ -62,53 +14,37 @@
     </h1>
 
     <div class="filter-container">
-        <label for="playerTypeFilter">투/타:</label>
-        <select id="playerTypeFilter">
+        <label for="playerType">Player Type:</label>
+        <select id="playerType">
             <option value="타자">타자</option>
             <option value="투수">투수</option>
         </select>
 
-        <label for="teamFilter">팀:</label>
-        <select id="teamFilter">
-            <option value="">All</option>
-            <option value="Landers (KBO)">Landers (KBO)</option>
-            <option value="Wiz (KBO)">Wiz (KBO)</option>
-            <option value="Twins (KBO)">Twins (KBO)</option>
-            <option value="Heroes (KBO)">Heroes (KBO)</option>
-            <option value="Bears (KBO)">Bears (KBO)</option>
-            <option value="Eagles (KBO)">Eagles (KBO)</option>
-            <option value="Lions (KBO)">Lions (KBO)</option>
-            <option value="Dinos (KBO)">Dinos (KBO)</option>
-            <option value="Giants (KBO)">Giants (KBO)</option>
-            <option value="Tigers (KBO)">Tigers (KBO)</option>
-        </select>
-
-        <label for="PosFilter" id="posFilterLabel">포지션:</label>
+        <label id="posFilterLabel" for="PosFilter">Position:</label>
         <select id="PosFilter">
             <option value="">All</option>
-            <option value="포수">C</option>
-            <option value="1루">1B</option>
-            <option value="2루">2B</option>
-            <option value="3루">3B</option>
-            <option value="유격">SS</option>
-            <option value="좌익">LF</option>
-            <option value="중견">CF</option>
-            <option value="우익">RF</option>
-            <option value="지명">DH</option>
+            <option value="포수">포수</option>
+            <option value="1루수">1루수</option>
+            <option value="2루수">2루수</option>
+            <option value="3루수">3루수</option>
+            <option value="유격수">유격수</option>
+            <option value="좌익수">좌익수</option>
+            <option value="중견수">중견수</option>
+            <option value="우익수">우익수</option>
+            <option value="지명타자">지명타자</option>
         </select>
 
-        <label for="plateAppearancesFilter">타석 수:</label>
-        <input type="number" id="plateAppearancesFilter" value="300" placeholder="Enter minimum PA">
+        <label for="teamFilter">Team:</label>
+        <input type="text" id="teamFilter" placeholder="Enter team name">
 
-        <label for="nameSearch">선수 이름:</label>
-        <input type="text" id="nameSearch" placeholder="Search by name">
+        <label for="nameSearch">Name:</label>
+        <input type="text" id="nameSearch" placeholder="Enter player name">
     </div>
 
     <main>
         <div class="table-wrapper">
             <table id="statsTable">
                 <thead id="tableHeader">
-                    <!-- 기본으로 타자 테이블 헤더를 표시 -->
                     <tr class="batter-header">
                         <th data-column="이름">이름</th>
                         <th data-column="팀">팀</th>
@@ -144,7 +80,6 @@
                         <th data-column="추정UBR">추정UBR</th>
                         <th data-column="Pos">Pos</th>
                     </tr>
-                    <!-- 투수 테이블 헤더 -->
                     <tr class="pitcher-header" style="display: none;">
                         <th data-column="이름">이름</th>
                         <th data-column="팀">팀</th>
@@ -184,23 +119,14 @@
     </main>
 
     <script>
-        document.getElementById('playerTypeFilter').addEventListener('change', function() {
+        document.getElementById('playerType').addEventListener('change', function() {
             loadCSV(this.value);
             togglePosFilter(this.value);
         });
 
-        document.getElementById('teamFilter').addEventListener('change', filterTable);
-        document.getElementById('plateAppearancesFilter').addEventListener('input', filterTable);
-        document.getElementById('PosFilter').addEventListener('change', filterTable);
-        document.getElementById('nameSearch').addEventListener('input', filterTable);
-
-        const tableHeaders = document.querySelectorAll('th');
-        tableHeaders.forEach(th => th.addEventListener('click', () => sortTable(th)));
-
         function togglePosFilter(playerType) {
             const posFilterLabel = document.getElementById('posFilterLabel');
             const posFilter = document.getElementById('PosFilter');
-
             if (playerType === '투수') {
                 posFilterLabel.style.display = 'none';
                 posFilter.style.display = 'none';
@@ -211,140 +137,53 @@
         }
 
         function loadCSV(playerType) {
-            const xhr = new XMLHttpRequest();
-            const csvFile = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
-            xhr.open('GET', csvFile, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    const csvData = xhr.responseText;
-                    populateTable(csvData, playerType);
-                }
-            };
-            xhr.send();
+            let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').map(row => row.split(','));
+                    populateTable(rows);
+                });
         }
 
-        function populateTable(csvData, playerType) {
-            const lines = csvData.split('\n').slice(1);
+        function populateTable(rows) {
             const tableBody = document.querySelector('#statsTable tbody');
-            tableBody.innerHTML = ''; // 이전 내용 삭제
-
-            lines.forEach(line => {
-                const data = line.split(',');
-                const row = document.createElement('tr');
-
-                if (playerType === '타자' && data[7] >= document.getElementById('plateAppearancesFilter').value) {
-                    row.innerHTML = `
-                        <td>${data[0]}</td>
-                        <td>${data[1]}</td>
-                        <td>${data[2]}</td>
-                        <td>${parseFloat(data[3]).toFixed(2)}</td>
-                        <td>${parseFloat(data[4]).toFixed(2)}</td>
-                        <td>${parseFloat(data[5]).toFixed(2)}</td>
-                        <td>${data[6]}</td>
-                        <td>${data[7]}</td>
-                        <td>${data[8]}</td>
-                        <td>${data[9]}</td>
-                        <td>${data[10]}</td>
-                        <td>${data[11]}</td>
-                        <td>${data[12]}</td>
-                        <td>${data[13]}</td>
-                        <td>${data[14]}</td>
-                        <td>${data[15]}</td>
-                        <td>${data[16]}</td>
-                        <td>${data[17]}</td>
-                        <td>${data[18]}</td>
-                        <td>${data[19]}</td>
-                        <td>${data[20]}</td>
-                        <td>${data[21]}</td>
-                        <td>${parseFloat(data[22]).toFixed(3)}</td>
-                        <td>${parseFloat(data[23]).toFixed(3)}</td>
-                        <td>${parseFloat(data[24]).toFixed(3)}</td>
-                        <td>${parseFloat(data[25]).toFixed(3)}</td>
-                        <td>${parseFloat(data[26]).toFixed(3)}</td>
-                        <td>${parseFloat(data[27]).toFixed(2)}</td>
-                        <td>${parseFloat(data[28]).toFixed(2)}</td>
-                        <td>${parseFloat(data[29]).toFixed(2)}</td>
-                        <td>${data[30]}</td>
-                    `;
-                    tableBody.appendChild(row);
-                } else if (playerType === '투수') {
-                    row.innerHTML = `
-                        <td>${data[0]}</td>
-                        <td>${data[1]}</td>
-                        <td>${parseFloat(data[2]).toFixed(2)}</td>
-                        <td>${parseFloat(data[3]).toFixed(2)}</td>
-                        <td>${data[4]}</td>
-                        <td>${data[5]}</td>
-                        <td>${data[6]}</td>
-                        <td>${data[7]}</td>
-                        <td>${data[8]}</td>
-                        <td>${data[9]}</td>
-                        <td>${data[10]}</td>
-                        <td>${data[11]}</td>
-                        <td>${data[12]}</td>
-                        <td>${data[13]}</td>
-                        <td>${data[14]}</td>
-                        <td>${data[15]}</td>
-                        <td>${parseFloat(data[16]).toFixed(2)}</td>
-                        <td>${parseFloat(data[17]).toFixed(2)}</td>
-                        <td>${parseFloat(data[18]).toFixed(2)}</td>
-                        <td>${parseFloat(data[19]).toFixed(2)}</td>
-                        <td>${parseFloat(data[20]).toFixed(2)}</td>
-                        <td>${parseFloat(data[21]).toFixed(2)}</td>
-                        <td>${parseFloat(data[22]).toFixed(2)}</td>
-                        <td>${parseFloat(data[23]).toFixed(2)}</td>
-                        <td>${data[24]}</td>
-                        <td>${data[25]}</td>
-                        <td>${parseFloat(data[26]).toFixed(2)}</td>
-                    `;
-                    tableBody.appendChild(row);
-                }
-            });
-
-            filterTable();
-        }
-
-        function filterTable() {
-            const teamFilterValue = document.getElementById('teamFilter').value.toLowerCase();
-            const posFilterValue = document.getElementById('PosFilter').value.toLowerCase();
-            const nameSearchValue = document.getElementById('nameSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#statsTable tbody tr');
+            tableBody.innerHTML = '';
 
             rows.forEach(row => {
-                const team = row.cells[1].textContent.toLowerCase();
-                const position = row.cells[2].textContent.toLowerCase();
-                const name = row.cells[0].textContent.toLowerCase();
-                const showRow = (team.includes(teamFilterValue) || teamFilterValue === '') &&
-                                (position.includes(posFilterValue) || posFilterValue === '') &&
-                                name.includes(nameSearchValue);
-
-                row.style.display = showRow ? '' : 'none';
+                const newRow = document.createElement('tr');
+                row.forEach(cell => {
+                    const newCell = document.createElement('td');
+                    newCell.textContent = cell.trim();
+                    newRow.appendChild(newCell);
+                });
+                tableBody.appendChild(newRow);
             });
         }
 
-        function sortTable(th) {
-            const column = th.dataset.column;
-            const table = th.closest('table');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const isAscending = th.classList.toggle('sorted-asc', !th.classList.contains('sorted-asc'));
+        document.querySelectorAll('#tableHeader th').forEach(th => {
+            th.addEventListener('click', () => {
+                const table = th.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const index = Array.from(th.parentNode.children).indexOf(th);
+                const isAscending = th.classList.toggle('sorted-asc');
 
-            rows.sort((a, b) => {
-                const aText = a.querySelector(`td[data-column="${column}"]`).textContent;
-                const bText = b.querySelector(`td[data-column="${column}"]`).textContent;
-                return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                if (!isAscending) {
+                    th.classList.remove('sorted-asc');
+                    th.classList.add('sorted-desc');
+                    rows.sort((a, b) => b.children[index].textContent.localeCompare(a.children[index].textContent));
+                } else {
+                    th.classList.remove('sorted-desc');
+                    rows.sort((a, b) => a.children[index].textContent.localeCompare(b.children[index].textContent));
+                }
+
+                rows.forEach(row => tbody.appendChild(row));
             });
-
-            th.classList.toggle('sorted-desc', !isAscending);
-            th.classList.toggle('sorted-asc', isAscending);
-
-            tbody.append(...rows);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            loadCSV('타자'); // 기본으로 타자 데이터를 로드
         });
-    </script>
 
+        // 초기 데이터 로드
+        loadCSV('타자');
+    </script>
 </body>
 </html>
