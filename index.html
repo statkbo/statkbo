@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stats.KBO</title>
+    <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
+</head>
+<body>
+
+    <h1>
+        <img src="https://raw.githubusercontent.com/statkbo/statkbo/main/logo.png" alt="stats.KBO Logo" style="vertical-align: middle; height: 1.2em;">
+        <span style="font-size: 10px; color: #666; margin-left: 10px;">( 선수 성적 저작권 문제 시 삭제 )</span>
+    </h1>
+
+    <div class="filter-container">
+        <label for="playerTypeFilter">선수 타입:</label>
+        <select id="playerTypeFilter">
+            <option value="">All</option>
+            <option value="타자">타자</option>
+            <option value="투수">투수</option>
+        </select>
+
+        <label for="teamFilter">팀:</label>
+        <select id="teamFilter">
+            <option value="">All</option>
+            <option value="Landers (KBO)">Landers (KBO)</option>
+            <option value="Wiz (KBO)">Wiz (KBO)</option>
+            <option value="Twins (KBO)">Twins (KBO)</option>
+            <option value="Heroes (KBO)">Heroes (KBO)</option>
+            <option value="Bears (KBO)">Bears (KBO)</option>
+            <option value="Eagles (KBO)">Eagles (KBO)</option>
+            <option value="Lions (KBO)">Lions (KBO)</option>
+            <option value="Dinos (KBO)">Dinos (KBO)</option>
+            <option value="Giants (KBO)">Giants (KBO)</option>
+            <option value="Tigers (KBO)">Tigers (KBO)</option>
+        </select>
+        
+        <label for="PosFilter">포지션:</label>
+        <select id="PosFilter">
+            <option value="">All</option>
+            <option value="포수">C</option>
+            <option value="1루">1B</option>
+            <option value="2루">2B</option>
+            <option value="3루">3B</option>
+            <option value="유격">SS</option>
+            <option value="좌익">LF</option>
+            <option value="중견">CF</option>
+            <option value="우익">RF</option>
+            <option value="지명">DH</option>
+        </select>
+
+        <label for="plateAppearancesFilter">타석 수:</label>
+        <input type="number" id="plateAppearancesFilter" value="300" placeholder="Enter minimum PA">
+
+        <label for="nameSearch">선수 이름:</label>
+        <input type="text" id="nameSearch" placeholder="Search by name">
+    </div>
+
+    <main>
+        <div class="table-wrapper">
+            <table id="statsTable">
+                <thead>
+                    <tr>
+                        <th data-column="name">이름</th>
+                        <th data-column="team">팀</th>
+                        <th data-column="Pos">포지션</th>
+                        <th data-column="wRC">wRC+</th>
+                        <th data-column="oWAR">WAR*</th>
+                        <th data-column="offWAR">offWAR</th>
+                        <th data-column="atBats">타수</th>
+                        <th data-column="plateAppearances">타석</th>
+                        <th data-column="hits">안타</th>
+                        <th data-column="doubles">2루타</th>
+                        <th data-column="triples">3루타</th>
+                        <th data-column="homeRuns">홈런</th>
+                        <th data-column="walks">4구(고4X)</th>
+                        <th data-column="hitByPitch">사구</th>
+                        <th data-column="sacFlies">희비</th>
+                        <th data-column="sacBunts">희번</th>
+                        <th data-column="intentionalWalks">고4</th>
+                        <th data-column="strikeouts">삼진</th>
+                        <th data-column="doublePlays">병살</th>
+                        <th data-column="steals">도루</th>
+                        <th data-column="caughtStealing">도루실패</th>
+                        <th data-column="runs">득점</th>
+                        <th data-column="rbis">타점</th>
+                        <th data-column="avg">타율</th>
+                        <th data-column="obp">출루율</th>
+                        <th data-column="slg">장타율</th>
+                        <th data-column="ops">OPS</th>
+                        <th data-column="wOBA">wOBA</th>
+                        <th data-column="wRAA">wRAA</th>
+                        <th data-column="wSB">wSB</th>
+                        <th data-column="spd">Spd</th>
+                        <th data-column="ubr">추정UBR</th>
+                        <th data-column="PosAdj">Pos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // CSV 파일 URL을 결정하는 함수
+        function getCSVUrl() {
+            const playerTypeFilter = document.querySelector('#playerTypeFilter').value;
+            return playerTypeFilter === '투수' ? 
+                'https://raw.githubusercontent.com/statkbo/statkbo/main/stat_pitcher.csv' : 
+                'https://raw.githubusercontent.com/statkbo/statkbo/main/stat.csv';
+        }
+
+        // CSV 파일을 가져와 파싱하는 함수
+        function fetchAndParseCSV(url) {
+            return fetch(url)
+                .then(response => response.text())
+                .then(text => parseCSV(text));
+        }
+
+        // CSV 파싱 함수
+        function parseCSV(text) {
+            const playerTypeFilter = document.querySelector('#playerTypeFilter').value;
+            const rows = text.split('\n').slice(1);  // 첫 줄은 헤더이므로 제거
+            return rows.map(row => {
+                const columns = row.split(',');
+                if (playerTypeFilter === '투수') {
+                    return {
+                        name: columns[0],
+                        team: columns[1],
+                        fWAR: parseFloat(columns[2]).toFixed(2),
+                        RA9fWAR: parseFloat(columns[3]).toFixed(2),
+                        innings: columns[4],
+                        earnedRuns: columns[5],
+                        runs: columns[6],
+                        strikeouts: columns[7],
+                        hitsAllowed: columns[8],
+                        walks: columns[9],
+                        hitByPitch: columns[10],
+                        homeRunsAllowed: columns[11],
+                        wins: columns[12],
+                        losses: columns[13],
+                        holds: columns[14],
+                        saves: columns[15],
+                        ERA: parseFloat(columns[16]).toFixed(3),
+                        FIP: parseFloat(columns[17]).toFixed(3),
+                        ERAPlus: parseFloat(columns[18]).toFixed(0),
+                        FIPPlus: parseFloat(columns[19]).toFixed(0),
+                        WHIP: parseFloat(columns[20]).toFixed(3),
+                        K9: parseFloat(columns[21]).toFixed(2),
+                        BB9: parseFloat(columns[22]).toFixed(2),
+                        KBB: parseFloat(columns[23]).toFixed(2),
+                        HR9: parseFloat(columns[24]).toFixed(2),
+                        RA9: parseFloat(columns[25]).toFixed(2),
+                        winPercent: parseFloat(columns[26]).toFixed(2),
+                        ERAWAR: parseFloat(columns[27]).toFixed(2),
+                    };
+                } else {
+                    return {
+                        name: columns[0],
+                        team: columns[1],
+                        Pos: columns[2],
+                        wRC: parseFloat(columns[3]).toFixed(1),
+                        oWAR: parseFloat(columns[4]).toFixed(2),
+                        offWAR: parseFloat(columns[5]).toFixed(2),
+                        atBats: columns[6],
+                        plateAppearances: columns[7],
+                        hits: columns[8],
+                        doubles: columns[9],
+                        triples: columns[10],
+                        homeRuns: columns[11],
+                        walks: columns[12],
+                        hitByPitch: columns[13],
+                        sacFlies: columns[14],
+                        sacBunts: columns[15],
+                        intentionalWalks: columns[16],
+                        strikeouts: columns[17],
+                        doublePlays: columns[18],
+                        steals: columns[19],
+                        caughtStealing: columns[20],
+                        runs: columns[21],
+                        rbis: columns[22],
+                        avg: parseFloat(columns[23]).toFixed(3),
+                        obp: parseFloat(columns[24]).toFixed(3),
+                        slg: parseFloat(columns[25]).toFixed(3),
+                        ops: parseFloat(columns[26]).toFixed(3),
+                        wOBA: parseFloat(columns[27]).toFixed(3),
+                        wRAA: parseFloat(columns[28]).toFixed(3),
+                        wSB: parseFloat(columns[29]).toFixed(3),
+                        spd: parseFloat(columns[30]).toFixed(2),
+                        ubr: parseFloat(columns[31]).toFixed(2),
+                        PosAdj: columns[32],
+                    };
+                }
+            });
+        }
+
+        // 데이터를 테이블에 채우는 함수
+        function populateTable(data) {
+            const tableBody = document.querySelector('#statsTable tbody');
+            tableBody.innerHTML = ''; // 테이블 초기화
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                Object.values(row).forEach(cellData => {
+                    const td = document.createElement('td');
+                    td.textContent = cellData;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // 데이터 필터 및 정렬 함수
+        function applyFiltersAndSort(data) {
+            let filteredData = data;
+            const playerTypeFilter = document.querySelector('#playerTypeFilter').value;
+            const teamFilter = document.querySelector('#teamFilter').value;
+            const posFilter = document.querySelector('#PosFilter').value;
+            const plateAppearancesFilter = document.querySelector('#plateAppearancesFilter').value;
+            const nameSearch = document.querySelector('#nameSearch').value.toLowerCase();
+
+            // 팀 필터링
+            if (teamFilter) {
+                filteredData = filteredData.filter(row => row.team.includes(teamFilter));
+            }
+
+            // 포지션 필터링
+            if (posFilter) {
+                filteredData = filteredData.filter(row => row.Pos.includes(posFilter));
+            }
+
+            // 타석 수 필터링
+            if (plateAppearancesFilter) {
+                filteredData = filteredData.filter(row => row.plateAppearances >= plateAppearancesFilter);
+            }
+
+            // 이름 검색
+            if (nameSearch) {
+                filteredData = filteredData.filter(row => row.name.toLowerCase().includes(nameSearch));
+            }
+
+            populateTable(filteredData);
+        }
+
+        // 데이터 로드 시 초기화
+        function loadData() {
+            const csvUrl = getCSVUrl(); // 선택한 선수 타입에 따라 URL 결정
+            fetchAndParseCSV(csvUrl).then(data => {
+                const filteredData = applyFiltersAndSort(data);
+                populateTable(filteredData);
+
+                document.querySelector('#teamFilter').addEventListener('change', () => applyFiltersAndSort(data));
+                document.querySelector('#PosFilter').addEventListener('change', () => applyFiltersAndSort(data));
+                document.querySelector('#playerTypeFilter').addEventListener('change', loadData); // 선수 타입 필터 변경 시 데이터 로드
+                document.querySelector('#plateAppearancesFilter').addEventListener('input', () => applyFiltersAndSort(data));
+                document.querySelector('#nameSearch').addEventListener('input', () => applyFiltersAndSort(data));
+            });
+        }
+
+        // 페이지가 로드되었을 때 데이터 불러오기
+        loadData();
+    </script>
+</body>
+</html>
