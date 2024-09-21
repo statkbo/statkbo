@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stats.KBO</title>
+    <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
+    <style>
+        th {
+            cursor: pointer; /* Make the headers clickable */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>
+        <img src="https://raw.githubusercontent.com/statkbo/statkbo/main/logo.png" alt="stats.KBO Logo" style="vertical-align: middle; height: 1.2em;">
+        <span style="font-size: 10px; color: #666; margin-left: 10px;">( 선수 성적 저작권 문제 시 삭제 )</span>
+    </h1>
+
+    <div class="filter-container">
+        <label for="playerTypeFilter">투/타:</label>
+        <select id="playerTypeFilter">
+            <option value="타자">타자</option>
+            <option value="투수">투수</option>
+        </select>
+
+        <label for="teamFilter">팀:</label>
+        <select id="teamFilter">
+            <option value="">All</option>
+            <option value="Landers (KBO)">Landers (KBO)</option>
+            <option value="Wiz (KBO)">Wiz (KBO)</option>
+            <option value="Twins (KBO)">Twins (KBO)</option>
+            <option value="Heroes (KBO)">Heroes (KBO)</option>
+            <option value="Bears (KBO)">Bears (KBO)</option>
+            <option value="Eagles (KBO)">Eagles (KBO)</option>
+            <option value="Lions (KBO)">Lions (KBO)</option>
+            <option value="Dinos (KBO)">Dinos (KBO)</option>
+            <option value="Giants (KBO)">Giants (KBO)</option>
+            <option value="Tigers (KBO)">Tigers (KBO)</option>
+        </select>
+
+        <label for="PosFilter" id="posFilterLabel">포지션:</label>
+        <select id="PosFilter">
+            <option value="">All</option>
+            <option value="포수">C</option>
+            <option value="1루">1B</option>
+            <option value="2루">2B</option>
+            <option value="3루">3B</option>
+            <option value="유격">SS</option>
+            <option value="좌익">LF</option>
+            <option value="중견">CF</option>
+            <option value="우익">RF</option>
+            <option value="지명">DH</option>
+        </select>
+
+        <label for="plateAppearancesFilter">타석 수:</label>
+        <input type="number" id="plateAppearancesFilter" value="300" placeholder="Enter minimum PA">
+
+        <label for="nameSearch">선수 이름:</label>
+        <input type="text" id="nameSearch" placeholder="Search by name">
+    </div>
+
+    <main>
+        <div class="table-wrapper">
+            <table id="statsTable">
+                <thead id="tableHeader">
+                    <tr class="batter-header">
+                        <th onclick="sortTable(0, 'batter')">이름</th>
+                        <th onclick="sortTable(1, 'batter')">팀</th>
+                        <th onclick="sortTable(2, 'batter')">포지션</th>
+                        <th onclick="sortTable(3, 'batter')">wRC+</th>
+                        <th onclick="sortTable(4, 'batter')">WAR*</th>
+                        <th onclick="sortTable(5, 'batter')">offWAR</th>
+                        <th onclick="sortTable(6, 'batter')">타수</th>
+                        <th onclick="sortTable(7, 'batter')">타석</th>
+                        <th onclick="sortTable(8, 'batter')">안타</th>
+                        <th onclick="sortTable(9, 'batter')">2루타</th>
+                        <th onclick="sortTable(10, 'batter')">3루타</th>
+                        <th onclick="sortTable(11, 'batter')">홈런</th>
+                        <th onclick="sortTable(12, 'batter')">4구(고4X)</th>
+                        <th onclick="sortTable(13, 'batter')">사구</th>
+                        <th onclick="sortTable(14, 'batter')">희비</th>
+                        <th onclick="sortTable(15, 'batter')">희번</th>
+                        <th onclick="sortTable(16, 'batter')">고4</th>
+                        <th onclick="sortTable(17, 'batter')">삼진</th>
+                        <th onclick="sortTable(18, 'batter')">병살</th>
+                        <th onclick="sortTable(19, 'batter')">도루</th>
+                        <th onclick="sortTable(20, 'batter')">도루실패</th>
+                        <th onclick="sortTable(21, 'batter')">득점</th>
+                        <th onclick="sortTable(22, 'batter')">타점</th>
+                        <th onclick="sortTable(23, 'batter')">타율</th>
+                        <th onclick="sortTable(24, 'batter')">출루율</th>
+                        <th onclick="sortTable(25, 'batter')">장타율</th>
+                        <th onclick="sortTable(26, 'batter')">OPS</th>
+                        <th onclick="sortTable(27, 'batter')">wOBA</th>
+                        <th onclick="sortTable(28, 'batter')">wRAA</th>
+                        <th onclick="sortTable(29, 'batter')">wSB</th>
+                        <th onclick="sortTable(30, 'batter')">Spd</th>
+                        <th onclick="sortTable(31, 'batter')">추정UBR</th>
+                        <th onclick="sortTable(32, 'batter')">Pos</th>
+                    </tr>
+                    <tr class="pitcher-header" style="display: none;">
+                        <th onclick="sortTable(0, 'pitcher')">이름</th>
+                        <th onclick="sortTable(1, 'pitcher')">팀</th>
+                        <th onclick="sortTable(2, 'pitcher')">fWAR</th>
+                        <th onclick="sortTable(3, 'pitcher')">(RA9+f)/2 WAR</th>
+                        <th onclick="sortTable(4, 'pitcher')">이닝</th>
+                        <th onclick="sortTable(5, 'pitcher')">실점</th>
+                        <th onclick="sortTable(6, 'pitcher')">자책점</th>
+                        <th onclick="sortTable(7, 'pitcher')">삼진</th>
+                        <th onclick="sortTable(8, 'pitcher')">피안타</th>
+                        <th onclick="sortTable(9, 'pitcher')">4구</th>
+                        <th onclick="sortTable(10, 'pitcher')">사구</th>
+                        <th onclick="sortTable(11, 'pitcher')">피홈런</th>
+                        <th onclick="sortTable(12, 'pitcher')">승</th>
+                        <th onclick="sortTable(13, 'pitcher')">패</th>
+                        <th onclick="sortTable(14, 'pitcher')">홀</th>
+                        <th onclick="sortTable(15, 'pitcher')">세</th>
+                        <th onclick="sortTable(16, 'pitcher')">ERA</th>
+                        <th onclick="sortTable(17, 'pitcher')">FIP</th>
+                        <th onclick="sortTable(18, 'pitcher')">ERA+</th>
+                        <th onclick="sortTable(19, 'pitcher')">FIP+</th>
+                        <th onclick="sortTable(20, 'pitcher')">WHIP</th>
+                        <th onclick="sortTable(21, 'pitcher')">K/9</th>
+                        <th onclick="sortTable(22, 'pitcher')">BB/9</th>
+                        <th onclick="sortTable(23, 'pitcher')">K/BB</th>
+                        <th onclick="sortTable(24, 'pitcher')">HR/9</th>
+                        <th onclick="sortTable(25, 'pitcher')">RA9</th>
+                        <th onclick="sortTable(26, 'pitcher')">WIN%</th>
+                        <th onclick="sortTable(27, 'pitcher')">ERA-WAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 데이터가 로드된 후 여기에 추가됩니다. -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let isAscending = true; // Track sorting direction
+
+        document.getElementById('playerTypeFilter').addEventListener('change', function() {
+            loadCSV(this.value);
+            togglePosFilter(this.value);
+        });
+
+        function loadCSV(playerType) {
+            let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
+            fetch(file)
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.trim().split('\n');
+                    const tableHeader = document.getElementById('tableHeader');
+                    const tbody = document.querySelector('#statsTable tbody');
+
+                    // 테이블 헤더 전환
+                    if (playerType === '타자') {
+                        tableHeader.querySelector('.batter-header').style.display = '';
+                        tableHeader.querySelector('.pitcher-header').style.display = 'none';
+                    } else {
+                        tableHeader.querySelector('.batter-header').style.display = 'none';
+                        tableHeader.querySelector('.pitcher-header').style.display = '';
+                    }
+
+                    tbody.innerHTML = ''; // 기존 테이블 데이터 삭제
+
+                    // CSV 데이터 파싱
+                    for (let i = 1; i < lines.length; i++) {
+                        const row = lines[i].split(',');
+                        const tr = document.createElement('tr');
+
+                        row.forEach((cell, index) => {
+                            const td = document.createElement('td');
+                            // Format specific columns based on index
+                            if (playerType === '타자') {
+                                if (index === 3) { // wRC+
+                                    td.textContent = parseFloat(cell).toFixed(1); // 소수점 한자리
+                                } else if ([4, 5, 28, 29, 30, 31, 32].includes(index)) { // WAR*, offWAR, wRAA, wSB, Spd
+                                    td.textContent = parseFloat(cell).toFixed(2); // 소수점 두자리
+                                } else if ([23, 24, 25, 26, 27].includes(index)) { // 타율, 출루율, 장타율, OPS, wOBA
+                                    td.textContent = parseFloat(cell).toFixed(3); // 소수점 세자리
+                                } else {
+                                    td.textContent = cell;
+                                }
+                            } else {
+                                // 투수 통계에 대한 포맷 조정
+                                if ([2, 3, 16, 17, 20, 21, 22, 23, 24, 25, 27].includes(index)) { // 해당 인덱스 소수점 두자리
+                                    td.textContent = parseFloat(cell).toFixed(2);
+                                } else if (index === 26) { // 세자리
+                                    td.textContent = parseFloat(cell).toFixed(3);
+                                } else if ([18, 19].includes(index)) { 
+                                    td.textContent = parseFloat(cell).toFixed(1); // 소수점 세자리
+                                } else {
+                                    td.textContent = cell; // 나머지는 그대로
+                                }
+                            }
+
+                            tr.appendChild(td);
+                        });
+
+                        tbody.appendChild(tr);
+                    }
+                });
+        }
+
+        function togglePosFilter(playerType) {
+            const posFilter = document.getElementById('posFilterLabel');
+            const posFilterSelect = document.getElementById('PosFilter');
+
+            if (playerType === '타자') {
+                posFilter.style.display = '';
+                posFilterSelect.style.display = '';
+            } else {
+                posFilter.style.display = 'none';
+                posFilterSelect.style.display = 'none';
+            }
+        }
+
+        function sortTable(columnIndex, playerType) {
+            const tbody = document.querySelector('#statsTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const aText = a.children[columnIndex].textContent;
+                const bText = b.children[columnIndex].textContent;
+
+                let aValue = isNaN(aText) ? aText : parseFloat(aText);
+                let bValue = isNaN(bText) ? bText : parseFloat(bText);
+
+                if (typeof aValue === 'string') {
+                    return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                } else {
+                    return isAscending ? aValue - bValue : bValue - aValue;
+                }
+            });
+
+            // Clear existing rows and append sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+            isAscending = !isAscending; // Toggle sorting order
+        }
+
+        // 초기화 시 기본 '타자' 데이터 로드
+        loadCSV('타자');
+    </script>
+
+</body>
+</html>
