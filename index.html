@@ -181,7 +181,7 @@
                                 }
                             } else {
                                 // 투수 통계에 대한 포맷 조정
-                                if ([2, 3, 16, 17, 20, 21, 22, 23, 24, 25, 27].includes(index)) { // 해당 인덱스 소수점 두자리
+                                if ([2, 3, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27].includes(index)) { // 해당 인덱스 소수점 두자리
                                     td.textContent = parseFloat(cell).toFixed(2);
                                 } else if (index === 26) { // 세자리
                                     td.textContent = parseFloat(cell).toFixed(3);
