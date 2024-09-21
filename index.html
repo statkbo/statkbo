@@ -171,11 +171,13 @@
                             // Format specific columns based on index
                             if (playerType === '타자') {
                                 if (index === 3) { // wRC+
-                                    td.textContent = parseFloat(cell).toFixed(1);
-                                } else if ([4, 5, -1, -2, -3, -4].includes(index)) { // WAR*, offWAR, wRAA, wSB, Spd
-                                    td.textContent = parseFloat(cell).toFixed(2);
+                                    td.textContent = parseFloat(cell).toFixed(1); // 소수점 한자리
+                                } else if (index === 21) { // 타점
+                                    td.textContent = Math.round(parseFloat(cell)); // 정수로 변환
+                                } else if ([4, 5, 24, 28, 29].includes(index)) { // WAR*, offWAR, wRAA, wSB, Spd
+                                    td.textContent = parseFloat(cell).toFixed(2); // 소수점 두자리
                                 } else if ([22, 23, 24, 25, 26, 27, 30].includes(index)) { // 타율, 출루율, 장타율, OPS, wOBA, 추정UBR, Pos
-                                    td.textContent = parseFloat(cell).toFixed(3);
+                                    td.textContent = parseFloat(cell).toFixed(3); // 소수점 세자리
                                 } else {
                                     td.textContent = cell;
                                 }
@@ -211,3 +213,4 @@
 
 </body>
 </html>
+
