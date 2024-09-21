@@ -132,7 +132,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Data will be populated here -->
+                    <!-- Table rows will be populated here -->
                 </tbody>
             </table>
         </div>
@@ -207,6 +207,7 @@
 
                         tbody.appendChild(tr);
                     }
+                    filterTable(); // 데이터를 로드한 후 필터링 적용
                 });
         }
 
@@ -221,12 +222,13 @@
                 posFilter.style.display = 'none';
                 posFilterSelect.style.display = 'none';
             }
+            filterTable(); // 포지션 필터의 상태에 따라 필터링 적용
         }
 
         function filterTable() {
             const teamFilter = document.getElementById('teamFilter').value;
             const posFilter = document.getElementById('PosFilter').value;
-            const plateAppearances = parseInt(document.getElementById('plateAppearancesFilter').value);
+            const plateAppearances = parseInt(document.getElementById('plateAppearancesFilter').value) || 0;
             const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
 
             const tbody = document.querySelector('#statsTable tbody');
@@ -235,14 +237,23 @@
             rows.forEach(row => {
                 const cells = row.children;
                 const teamMatch = teamFilter ? cells[1].textContent === teamFilter : true;
-                const posMatch = posFilter ? cells[2].textContent === posFilter : true;
+                const posMatch = posFilter ? (cells[2].textContent === posFilter || (cells.length > 2 && cells[2].textContent === '')) : true;
                 const paMatch = parseInt(cells[6].textContent) >= plateAppearances; // For batters
                 const nameMatch = cells[0].textContent.toLowerCase().includes(nameSearch);
 
-                if (teamMatch && posMatch && paMatch && nameMatch) {
-                    row.style.display = '';
+                if (document.getElementById('playerTypeFilter').value === '타자') {
+                    if (teamMatch && posMatch && paMatch && nameMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 } else {
-                    row.style.display = 'none';
+                    const inningMatch = parseInt(cells[4].textContent) >= plateAppearances; // For pitchers (using inning data)
+                    if (teamMatch && nameMatch && inningMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 }
             });
         }
