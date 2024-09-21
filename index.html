@@ -54,8 +54,8 @@
             <option value="지명">DH</option>
         </select>
 
-        <label for="appearancesFilter" id="appearancesLabel">타석 수:</label>
-        <input type="number" id="appearancesFilter" value="300" placeholder="Enter minimum PA">
+        <label for="plateAppearancesFilter">최소 이닝/타석 수:</label>
+        <input type="number" id="plateAppearancesFilter" value="100" placeholder="Enter minimum PA/IP">
 
         <label for="nameSearch">선수 이름:</label>
         <input type="text" id="nameSearch" placeholder="Search by name">
@@ -132,7 +132,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                <!-- 데이터가 로드된 후 여기서 채워짐 -->
+                    <!-- Table rows will be populated here -->
                 </tbody>
             </table>
         </div>
@@ -144,8 +144,12 @@
         document.getElementById('playerTypeFilter').addEventListener('change', function() {
             loadCSV(this.value);
             togglePosFilter(this.value);
-            updateAppearancesLabel(this.value);
         });
+
+        document.getElementById('teamFilter').addEventListener('change', filterTable);
+        document.getElementById('PosFilter').addEventListener('change', filterTable);
+        document.getElementById('plateAppearancesFilter').addEventListener('input', filterTable);
+        document.getElementById('nameSearch').addEventListener('input', filterTable);
 
         function loadCSV(playerType) {
             let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
@@ -203,6 +207,7 @@
 
                         tbody.appendChild(tr);
                     }
+                    filterTable(); // 데이터를 로드한 후 필터링 적용
                 });
         }
 
@@ -217,13 +222,40 @@
                 posFilter.style.display = 'none';
                 posFilterSelect.style.display = 'none';
             }
+            filterTable(); // 포지션 필터의 상태에 따라 필터링 적용
         }
 
-        function updateAppearancesLabel(playerType) {
-            const appearancesLabel = document.getElementById('appearancesLabel');
-            appearancesLabel.textContent = playerType === '투수' ? '이닝 수:' : '타석 수:';
-            const appearancesInput = document.getElementById('appearancesFilter');
-            appearancesInput.value = playerType === '투수' ? 100 : 300; // 기본값 설정
+        function filterTable() {
+            const teamFilter = document.getElementById('teamFilter').value;
+            const posFilter = document.getElementById('PosFilter').value;
+            const plateAppearances = parseInt(document.getElementById('plateAppearancesFilter').value) || 0;
+            const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
+
+            const tbody = document.querySelector('#statsTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.forEach(row => {
+                const cells = row.children;
+                const teamMatch = teamFilter ? cells[1].textContent === teamFilter : true;
+                const posMatch = posFilter ? (cells[2].textContent === posFilter || (cells.length > 2 && cells[2].textContent === '')) : true;
+                const paMatch = parseInt(cells[6].textContent) >= plateAppearances; // For batters
+                const nameMatch = cells[0].textContent.toLowerCase().includes(nameSearch);
+
+                if (document.getElementById('playerTypeFilter').value === '타자') {
+                    if (teamMatch && posMatch && paMatch && nameMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else {
+                    const inningMatch = parseInt(cells[4].textContent) >= plateAppearances; // For pitchers (using inning data)
+                    if (teamMatch && nameMatch && inningMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
         }
 
         function sortTable(columnIndex, playerType) {
@@ -253,6 +285,5 @@
         // 초기화 시 기본 '타자' 데이터 로드
         loadCSV('타자');
     </script>
-
 </body>
 </html>
