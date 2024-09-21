@@ -60,7 +60,7 @@
         <div class="table-wrapper">
             <table id="statsTable">
                 <thead>
-                    <tr>
+                    <tr id="tableHeader">
                         <th data-column="name">이름</th>
                         <th data-column="team">팀</th>
                         <th data-column="Pos">포지션</th>
@@ -159,7 +159,7 @@
                         ubr: parseFloat(columns[31]).toFixed(2),
                         PosAdj: parseFloat(columns[32]).toFixed(2)
                     };
-                } else if (columns.length === 27) { // 투수 데이터 형식
+                } else if (columns.length === 28) { // 투수 데이터 형식
                     return {
                         name: columns[0],
                         team: columns[1],
@@ -207,6 +207,7 @@
         // 테이블 렌더링 함수
         function renderTable(data) {
             const tbody = document.querySelector('#statsTable tbody');
+            const playerType = document.querySelector('#playerTypeFilter').value;
             tbody.innerHTML = '';
 
             data.forEach(row => {
@@ -221,6 +222,41 @@
 
                 tbody.appendChild(tr);
             });
+
+            // 투수일 경우 헤더 수정
+            if (playerType === '투수') {
+                const headerRow = document.querySelector('#tableHeader');
+                headerRow.innerHTML = `
+                    <th>이름</th>
+                    <th>팀</th>
+                    <th>fWAR</th>
+                    <th>(RA9+f)/2 WAR</th>
+                    <th>이닝</th>
+                    <th>실점</th>
+                    <th>자책점</th>
+                    <th>삼진</th>
+                    <th>피안타</th>
+                    <th>4구</th>
+                    <th>사구</th>
+                    <th>피홈런</th>
+                    <th>승</th>
+                    <th>패</th>
+                    <th>홀</th>
+                    <th>세</th>
+                    <th>ERA</th>
+                    <th>FIP</th>
+                    <th>ERA+</th>
+                    <th>FIP+</th>
+                    <th>WHIP</th>
+                    <th>K/9</th>
+                    <th>BB/9</th>
+                    <th>K/BB</th>
+                    <th>HR/9</th>
+                    <th>RA9</th>
+                    <th>WIN%</th>
+                    <th>ERA-WAR</th>
+                `;
+            }
         }
 
         // 초기 테이블 로드
