@@ -146,6 +146,11 @@
             togglePosFilter(this.value);
         });
 
+        document.getElementById('teamFilter').addEventListener('change', filterTable);
+        document.getElementById('PosFilter').addEventListener('change', filterTable);
+        document.getElementById('plateAppearancesFilter').addEventListener('input', filterTable);
+        document.getElementById('nameSearch').addEventListener('input', filterTable);
+
         function loadCSV(playerType) {
             let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
             fetch(file)
@@ -216,6 +221,30 @@
                 posFilter.style.display = 'none';
                 posFilterSelect.style.display = 'none';
             }
+        }
+
+        function filterTable() {
+            const teamFilter = document.getElementById('teamFilter').value;
+            const posFilter = document.getElementById('PosFilter').value;
+            const plateAppearances = parseInt(document.getElementById('plateAppearancesFilter').value);
+            const nameSearch = document.getElementById('nameSearch').value.toLowerCase();
+
+            const tbody = document.querySelector('#statsTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.forEach(row => {
+                const cells = row.children;
+                const teamMatch = teamFilter ? cells[1].textContent === teamFilter : true;
+                const posMatch = posFilter ? cells[2].textContent === posFilter : true;
+                const paMatch = parseInt(cells[6].textContent) >= plateAppearances; // For batters
+                const nameMatch = cells[0].textContent.toLowerCase().includes(nameSearch);
+
+                if (teamMatch && posMatch && paMatch && nameMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
 
         function sortTable(columnIndex, playerType) {
