@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stats.KBO</title>
     <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
+    <style>
+        th {
+            cursor: pointer; /* Make the headers clickable */
+        }
+    </style>
 </head>
 <body>
 
@@ -60,72 +65,70 @@
         <div class="table-wrapper">
             <table id="statsTable">
                 <thead id="tableHeader">
-                    <!-- 기본으로 타자 테이블 헤더를 표시 -->
                     <tr class="batter-header">
-                        <th>이름</th>
-                        <th>팀</th>
-                        <th>포지션</th>
-                        <th>wRC+</th>
-                        <th>WAR*</th>
-                        <th>offWAR</th>
-                        <th>타수</th>
-                        <th>타석</th>
-                        <th>안타</th>
-                        <th>2루타</th>
-                        <th>3루타</th>
-                        <th>홈런</th>
-                        <th>4구(고4X)</th>
-                        <th>사구</th>
-                        <th>희비</th>
-                        <th>희번</th>
-                        <th>고4</th>
-                        <th>삼진</th>
-                        <th>병살</th>
-                        <th>도루</th>
-                        <th>도루실패</th>
-                        <th>득점</th>
-                        <th>타점</th>
-                        <th>타율</th>
-                        <th>출루율</th>
-                        <th>장타율</th>
-                        <th>OPS</th>
-                        <th>wOBA</th>
-                        <th>wRAA</th>
-                        <th>wSB</th>
-                        <th>Spd</th>
-                        <th>추정UBR</th>
-                        <th>Pos</th>
+                        <th onclick="sortTable(0, 'batter')">이름</th>
+                        <th onclick="sortTable(1, 'batter')">팀</th>
+                        <th onclick="sortTable(2, 'batter')">포지션</th>
+                        <th onclick="sortTable(3, 'batter')">wRC+</th>
+                        <th onclick="sortTable(4, 'batter')">WAR*</th>
+                        <th onclick="sortTable(5, 'batter')">offWAR</th>
+                        <th onclick="sortTable(6, 'batter')">타수</th>
+                        <th onclick="sortTable(7, 'batter')">타석</th>
+                        <th onclick="sortTable(8, 'batter')">안타</th>
+                        <th onclick="sortTable(9, 'batter')">2루타</th>
+                        <th onclick="sortTable(10, 'batter')">3루타</th>
+                        <th onclick="sortTable(11, 'batter')">홈런</th>
+                        <th onclick="sortTable(12, 'batter')">4구(고4X)</th>
+                        <th onclick="sortTable(13, 'batter')">사구</th>
+                        <th onclick="sortTable(14, 'batter')">희비</th>
+                        <th onclick="sortTable(15, 'batter')">희번</th>
+                        <th onclick="sortTable(16, 'batter')">고4</th>
+                        <th onclick="sortTable(17, 'batter')">삼진</th>
+                        <th onclick="sortTable(18, 'batter')">병살</th>
+                        <th onclick="sortTable(19, 'batter')">도루</th>
+                        <th onclick="sortTable(20, 'batter')">도루실패</th>
+                        <th onclick="sortTable(21, 'batter')">득점</th>
+                        <th onclick="sortTable(22, 'batter')">타점</th>
+                        <th onclick="sortTable(23, 'batter')">타율</th>
+                        <th onclick="sortTable(24, 'batter')">출루율</th>
+                        <th onclick="sortTable(25, 'batter')">장타율</th>
+                        <th onclick="sortTable(26, 'batter')">OPS</th>
+                        <th onclick="sortTable(27, 'batter')">wOBA</th>
+                        <th onclick="sortTable(28, 'batter')">wRAA</th>
+                        <th onclick="sortTable(29, 'batter')">wSB</th>
+                        <th onclick="sortTable(30, 'batter')">Spd</th>
+                        <th onclick="sortTable(31, 'batter')">추정UBR</th>
+                        <th onclick="sortTable(32, 'batter')">Pos</th>
                     </tr>
-                    <!-- 투수 테이블 헤더 -->
                     <tr class="pitcher-header" style="display: none;">
-                        <th>이름</th>
-                        <th>팀</th>
-                        <th>fWAR</th>
-                        <th>(RA9+f)/2 WAR</th>
-                        <th>이닝</th>
-                        <th>실점</th>
-                        <th>자책점</th>
-                        <th>삼진</th>
-                        <th>피안타</th>
-                        <th>4구</th>
-                        <th>사구</th>
-                        <th>피홈런</th>
-                        <th>승</th>
-                        <th>패</th>
-                        <th>홀</th>
-                        <th>세</th>
-                        <th>ERA</th>
-                        <th>FIP</th>
-                        <th>ERA+</th>
-                        <th>FIP+</th>
-                        <th>WHIP</th>
-                        <th>K/9</th>
-                        <th>BB/9</th>
-                        <th>K/BB</th>
-                        <th>HR/9</th>
-                        <th>RA9</th>
-                        <th>WIN%</th>
-                        <th>ERA-WAR</th>
+                        <th onclick="sortTable(0, 'pitcher')">이름</th>
+                        <th onclick="sortTable(1, 'pitcher')">팀</th>
+                        <th onclick="sortTable(2, 'pitcher')">fWAR</th>
+                        <th onclick="sortTable(3, 'pitcher')">(RA9+f)/2 WAR</th>
+                        <th onclick="sortTable(4, 'pitcher')">이닝</th>
+                        <th onclick="sortTable(5, 'pitcher')">실점</th>
+                        <th onclick="sortTable(6, 'pitcher')">자책점</th>
+                        <th onclick="sortTable(7, 'pitcher')">삼진</th>
+                        <th onclick="sortTable(8, 'pitcher')">피안타</th>
+                        <th onclick="sortTable(9, 'pitcher')">4구</th>
+                        <th onclick="sortTable(10, 'pitcher')">사구</th>
+                        <th onclick="sortTable(11, 'pitcher')">피홈런</th>
+                        <th onclick="sortTable(12, 'pitcher')">승</th>
+                        <th onclick="sortTable(13, 'pitcher')">패</th>
+                        <th onclick="sortTable(14, 'pitcher')">홀</th>
+                        <th onclick="sortTable(15, 'pitcher')">세</th>
+                        <th onclick="sortTable(16, 'pitcher')">ERA</th>
+                        <th onclick="sortTable(17, 'pitcher')">FIP</th>
+                        <th onclick="sortTable(18, 'pitcher')">ERA+</th>
+                        <th onclick="sortTable(19, 'pitcher')">FIP+</th>
+                        <th onclick="sortTable(20, 'pitcher')">WHIP</th>
+                        <th onclick="sortTable(21, 'pitcher')">K/9</th>
+                        <th onclick="sortTable(22, 'pitcher')">BB/9</th>
+                        <th onclick="sortTable(23, 'pitcher')">K/BB</th>
+                        <th onclick="sortTable(24, 'pitcher')">HR/9</th>
+                        <th onclick="sortTable(25, 'pitcher')">RA9</th>
+                        <th onclick="sortTable(26, 'pitcher')">WIN%</th>
+                        <th onclick="sortTable(27, 'pitcher')">ERA-WAR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,6 +139,8 @@
     </main>
 
     <script>
+        let isAscending = true; // Track sorting direction
+
         document.getElementById('playerTypeFilter').addEventListener('change', function() {
             loadCSV(this.value);
             togglePosFilter(this.value);
@@ -211,6 +216,30 @@
                 posFilter.style.display = 'none';
                 posFilterSelect.style.display = 'none';
             }
+        }
+
+        function sortTable(columnIndex, playerType) {
+            const tbody = document.querySelector('#statsTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const aText = a.children[columnIndex].textContent;
+                const bText = b.children[columnIndex].textContent;
+
+                let aValue = isNaN(aText) ? aText : parseFloat(aText);
+                let bValue = isNaN(bText) ? bText : parseFloat(bText);
+
+                if (typeof aValue === 'string') {
+                    return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                } else {
+                    return isAscending ? aValue - bValue : bValue - aValue;
+                }
+            });
+
+            // Clear existing rows and append sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+            isAscending = !isAscending; // Toggle sorting order
         }
 
         // 초기화 시 기본 '타자' 데이터 로드
