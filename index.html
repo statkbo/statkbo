@@ -287,3 +287,19 @@
     </script>
 </body>
 </html>
+
+<script>
+    function adjustMainMargin() {
+        const headerHeight = document.querySelector('h1').offsetHeight;
+        const filterHeight = document.querySelector('.filter-container').offsetHeight;
+        const main = document.querySelector('main');
+        
+        main.style.marginTop = `${headerHeight + filterHeight + 10}px`;
+    }
+
+    // 페이지 로드 시 여백 조정
+    window.addEventListener('load', adjustMainMargin);
+
+    // 창 크기 조정 시 여백 조정
+    window.addEventListener('resize', adjustMainMargin);
+</script>
