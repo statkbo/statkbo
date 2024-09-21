@@ -174,7 +174,7 @@
                                     td.textContent = parseFloat(cell).toFixed(1); // 소수점 한자리
                                 } else if ([4, 5].includes(index)) { // WAR*, offWAR, wRAA, wSB, Spd
                                     td.textContent = parseFloat(cell).toFixed(2); // 소수점 두자리
-                                } else if ([-1].includes(index)) { // 타율, 출루율, 장타율, OPS, wOBA, 추정UBR, Pos
+                                } else if ([23, 24, 25, 26, 27].includes(index)) { // 타율, 출루율, 장타율, OPS, wOBA, 추정UBR, Pos
                                     td.textContent = parseFloat(cell).toFixed(3); // 소수점 세자리
                                 } else {
                                     td.textContent = cell;
