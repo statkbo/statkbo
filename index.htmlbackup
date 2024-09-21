@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>stats.KBO</title>
+    <title>KBO Stats</title>
     <link rel="stylesheet" href="style.css"> <!-- 외부 CSS 파일 링크 -->
 </head>
 <body>
@@ -14,273 +14,176 @@
     </h1>
 
     <div class="filter-container">
-        <label for="teamFilter">팀:</label>
-        <select id="teamFilter">
-            <option value="">All</option>
-            <option value="Landers (KBO)">Landers (KBO)</option>
-            <option value="Wiz (KBO)">Wiz (KBO)</option>
-            <option value="Twins (KBO)">Twins (KBO)</option>
-            <option value="Heroes (KBO)">Heroes (KBO)</option>
-            <option value="Bears (KBO)">Bears (KBO)</option>
-            <option value="Eagles (KBO)">Eagles (KBO)</option>
-            <option value="Lions (KBO)">Lions (KBO)</option>
-            <option value="Dinos (KBO)">Dinos (KBO)</option>
-            <option value="Giants (KBO)">Giants (KBO)</option>
-            <option value="Tigers (KBO)">Tigers (KBO)</option>
+        <label for="playerType">Player Type:</label>
+        <select id="playerType">
+            <option value="타자">타자</option>
+            <option value="투수">투수</option>
         </select>
-        
-        <label for="PosFilter">포지션:</label>
+
+        <label id="posFilterLabel" for="PosFilter">Position:</label>
         <select id="PosFilter">
             <option value="">All</option>
-            <option value="포수">C</option>
-            <option value="1루">1B</option>
-            <option value="2루">2B</option>
-            <option value="3루">3B</option>
-            <option value="유격">SS</option>
-            <option value="좌익">LF</option>
-            <option value="중견">CF</option>
-            <option value="우익">RF</option>
-            <option value="지명">DH</option>
+            <option value="포수">포수</option>
+            <option value="1루수">1루수</option>
+            <option value="2루수">2루수</option>
+            <option value="3루수">3루수</option>
+            <option value="유격수">유격수</option>
+            <option value="좌익수">좌익수</option>
+            <option value="중견수">중견수</option>
+            <option value="우익수">우익수</option>
+            <option value="지명타자">지명타자</option>
         </select>
 
-        <label for="plateAppearancesFilter">타석 수:</label>
-        <input type="number" id="plateAppearancesFilter" value="300" placeholder="Enter minimum PA">
+        <label for="teamFilter">Team:</label>
+        <input type="text" id="teamFilter" placeholder="Enter team name">
 
-        <label for="nameSearch">선수 이름:</label>
-        <input type="text" id="nameSearch" placeholder="Search by name">
+        <label for="nameSearch">Name:</label>
+        <input type="text" id="nameSearch" placeholder="Enter player name">
     </div>
 
     <main>
         <div class="table-wrapper">
             <table id="statsTable">
-                <thead>
-                    <tr>
-                        <th data-column="name">이름</th>
-                        <th data-column="team">팀</th>
-                        <th data-column="Pos">포지션</th>
-                        <th data-column="wRC">wRC+</th>
-                        <th data-column="oWAR">WAR*</th>
+                <thead id="tableHeader">
+                    <tr class="batter-header">
+                        <th data-column="이름">이름</th>
+                        <th data-column="팀">팀</th>
+                        <th data-column="포지션">포지션</th>
+                        <th data-column="wRC+">wRC+</th>
+                        <th data-column="WAR*">WAR*</th>
                         <th data-column="offWAR">offWAR</th>
-                        <th data-column="atBats">타수</th>
-                        <th data-column="plateAppearances">타석</th>
-                        <th data-column="hits">안타</th>
-                        <th data-column="doubles">2루타</th>
-                        <th data-column="triples">3루타</th>
-                        <th data-column="homeRuns">홈런</th>
-                        <th data-column="walks">4구(고4X)</th>
-                        <th data-column="hitByPitch">사구</th>
-                        <th data-column="sacFlies">희비</th>
-                        <th data-column="sacBunts">희번</th>
-                        <th data-column="intentionalWalks">고4</th>
-                        <th data-column="strikeouts">삼진</th>
-                        <th data-column="doublePlays">병살</th>
-                        <th data-column="steals">도루</th>
-                        <th data-column="caughtStealing">도루실패</th>
-                        <th data-column="runs">득점</th>
-                        <th data-column="rbis">타점</th>
-                        <th data-column="avg">타율</th>
-                        <th data-column="obp">출루율</th>
-                        <th data-column="slg">장타율</th>
-                        <th data-column="ops">OPS</th>
+                        <th data-column="타수">타수</th>
+                        <th data-column="타석">타석</th>
+                        <th data-column="안타">안타</th>
+                        <th data-column="2루타">2루타</th>
+                        <th data-column="3루타">3루타</th>
+                        <th data-column="홈런">홈런</th>
+                        <th data-column="4구(고4X)">4구(고4X)</th>
+                        <th data-column="사구">사구</th>
+                        <th data-column="희비">희비</th>
+                        <th data-column="희번">희번</th>
+                        <th data-column="고4">고4</th>
+                        <th data-column="삼진">삼진</th>
+                        <th data-column="병살">병살</th>
+                        <th data-column="도루">도루</th>
+                        <th data-column="도루실패">도루실패</th>
+                        <th data-column="득점">득점</th>
+                        <th data-column="타점">타점</th>
+                        <th data-column="타율">타율</th>
+                        <th data-column="출루율">출루율</th>
+                        <th data-column="장타율">장타율</th>
+                        <th data-column="OPS">OPS</th>
                         <th data-column="wOBA">wOBA</th>
                         <th data-column="wRAA">wRAA</th>
                         <th data-column="wSB">wSB</th>
-                        <th data-column="spd">Spd</th>
-                        <th data-column="ubr">추정UBR</th>
-                        <th data-column="PosAdj">Pos</th>
+                        <th data-column="Spd">Spd</th>
+                        <th data-column="추정UBR">추정UBR</th>
+                        <th data-column="Pos">Pos</th>
+                    </tr>
+                    <tr class="pitcher-header" style="display: none;">
+                        <th data-column="이름">이름</th>
+                        <th data-column="팀">팀</th>
+                        <th data-column="fWAR">fWAR</th>
+                        <th data-column="(RA9+f)/2 WAR">(RA9+f)/2 WAR</th>
+                        <th data-column="이닝">이닝</th>
+                        <th data-column="실점">실점</th>
+                        <th data-column="자책점">자책점</th>
+                        <th data-column="삼진">삼진</th>
+                        <th data-column="피안타">피안타</th>
+                        <th data-column="4구">4구</th>
+                        <th data-column="사구">사구</th>
+                        <th data-column="피홈런">피홈런</th>
+                        <th data-column="승">승</th>
+                        <th data-column="패">패</th>
+                        <th data-column="홀">홀</th>
+                        <th data-column="세">세</th>
+                        <th data-column="ERA">ERA</th>
+                        <th data-column="FIP">FIP</th>
+                        <th data-column="ERA+">ERA+</th>
+                        <th data-column="FIP+">FIP+</th>
+                        <th data-column="WHIP">WHIP</th>
+                        <th data-column="K/9">K/9</th>
+                        <th data-column="BB/9">BB/9</th>
+                        <th data-column="K/BB">K/BB</th>
+                        <th data-column="HR/9">HR/9</th>
+                        <th data-column="RA9">RA9</th>
+                        <th data-column="WIN%">WIN%</th>
+                        <th data-column="ERA-WAR">ERA-WAR</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- 데이터가 로드된 후 여기에 추가됩니다. -->
                 </tbody>
             </table>
         </div>
     </main>
 
     <script>
-        // CSV 파일 URL - 실제 URL을 여기에 입력하세요
-        const csvUrl = 'https://raw.githubusercontent.com/statkbo/statkbo/main/stat.csv';
+        document.getElementById('playerType').addEventListener('change', function() {
+            loadCSV(this.value);
+            togglePosFilter(this.value);
+        });
 
-        // CSV 파일을 가져와 파싱하는 함수
-        function fetchAndParseCSV(url) {
-            return fetch(url)
+        function togglePosFilter(playerType) {
+            const posFilterLabel = document.getElementById('posFilterLabel');
+            const posFilter = document.getElementById('PosFilter');
+            if (playerType === '투수') {
+                posFilterLabel.style.display = 'none';
+                posFilter.style.display = 'none';
+            } else {
+                posFilterLabel.style.display = 'inline';
+                posFilter.style.display = 'inline';
+            }
+        }
+
+        function loadCSV(playerType) {
+            let file = playerType === '타자' ? 'stat.csv' : 'stat_pitcher.csv';
+            fetch(file)
                 .then(response => response.text())
-                .then(text => parseCSV(text));
+                .then(data => {
+                    const rows = data.split('\n').map(row => row.split(','));
+                    populateTable(rows);
+                });
         }
 
-        // CSV 파싱 함수
-        function parseCSV(text) {
-            const rows = text.split('\n').slice(1);  // 첫 줄은 헤더이므로 제거
-            return rows.map(row => {
-                const columns = row.split(',');
-                return {
-                    name: columns[0],
-                    team: columns[1],
-                    Pos: columns[2],
-                    wRC: parseFloat(columns[3]).toFixed(1),
-                    oWAR: parseFloat(columns[4]).toFixed(2),
-                    offWAR: parseFloat(columns[5]).toFixed(2),
-                    atBats: columns[6],
-                    plateAppearances: columns[7],
-                    hits: columns[8],
-                    doubles: columns[9],
-                    triples: columns[10],
-                    homeRuns: columns[11],
-                    walks: columns[12],
-                    hitByPitch: columns[13],
-                    sacFlies: columns[14],
-                    sacBunts: columns[15],
-                    intentionalWalks: columns[16],
-                    strikeouts: columns[17],
-                    doublePlays: columns[18],
-                    steals: columns[19],
-                    caughtStealing: columns[20],
-                    runs: columns[21],
-                    rbis: columns[22],
-                    avg: parseFloat(columns[23]).toFixed(3),
-                    obp: parseFloat(columns[24]).toFixed(3),
-                    slg: parseFloat(columns[25]).toFixed(3),
-                    ops: parseFloat(columns[26]).toFixed(3),
-                    wOBA: parseFloat(columns[27]).toFixed(3),
-                    wRAA: parseFloat(columns[28]).toFixed(2),
-                    wSB: parseFloat(columns[29]).toFixed(2),
-                    spd: parseFloat(columns[30]).toFixed(2),
-                    ubr: parseFloat(columns[31]).toFixed(2),
-                    PosAdj: parseFloat(columns[32]).toFixed(2)
-                };
+        function populateTable(rows) {
+            const tableBody = document.querySelector('#statsTable tbody');
+            tableBody.innerHTML = '';
+
+            rows.forEach(row => {
+                const newRow = document.createElement('tr');
+                row.forEach(cell => {
+                    const newCell = document.createElement('td');
+                    newCell.textContent = cell.trim();
+                    newRow.appendChild(newCell);
+                });
+                tableBody.appendChild(newRow);
             });
         }
 
-        // HTML 테이블에 데이터를 삽입하는 함수
-        function populateTable(data) {
-            const tbody = document.querySelector('#statsTable tbody');
-            tbody.innerHTML = ''; // Clear existing rows
-
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.team}</td>
-                    <td>${item.Pos}</td>
-                    <td>${item.wRC}</td>
-                    <td>${item.oWAR}</td>
-                    <td>${item.offWAR}</td>
-                    <td>${item.atBats}</td>
-                    <td>${item.plateAppearances}</td>
-                    <td>${item.hits}</td>
-                    <td>${item.doubles}</td>
-                    <td>${item.triples}</td>
-                    <td>${item.homeRuns}</td>
-                    <td>${item.walks}</td>
-                    <td>${item.hitByPitch}</td>
-                    <td>${item.sacFlies}</td>
-                    <td>${item.sacBunts}</td>
-                    <td>${item.intentionalWalks}</td>
-                    <td>${item.strikeouts}</td>
-                    <td>${item.doublePlays}</td>
-                    <td>${item.steals}</td>
-                    <td>${item.caughtStealing}</td>
-                    <td>${item.runs}</td>
-                    <td>${item.rbis}</td>
-                    <td>${item.avg}</td>
-                    <td>${item.obp}</td>
-                    <td>${item.slg}</td>
-                    <td>${item.ops}</td>
-                    <td>${item.wOBA}</td>
-                    <td>${item.wRAA}</td>
-                    <td>${item.wSB}</td>
-                    <td>${item.spd}</td>
-                    <td>${item.ubr}</td>
-                    <td>${item.PosAdj}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // 데이터 필터링 함수
-        function filterData(data) {
-            const teamFilter = document.querySelector('#teamFilter').value;
-            const PosFilter = document.querySelector('#PosFilter').value;
-            const plateAppearancesFilter = parseFloat(document.querySelector('#plateAppearancesFilter').value) || 300;
-            const nameSearch = document.querySelector('#nameSearch').value.toLowerCase();
-        
-            return data.filter(item => {
-                const meetsPosCriteria = PosFilter === '' || item.Pos === PosFilter;
-                const meetsTeamCriteria = teamFilter === '' || item.team === teamFilter;
-                const meetsPlateAppearancesCriteria = parseFloat(item.plateAppearances) >= plateAppearancesFilter;
-                const meetsNameSearchCriteria = item.name.toLowerCase().includes(nameSearch);
-        
-                return meetsPosCriteria && meetsTeamCriteria && meetsPlateAppearancesCriteria && meetsNameSearchCriteria;
-            });
-        }
-
-
-        // 필터 및 정렬 적용 함수
-        function applyFiltersAndSort(data) {
-            const filteredData = filterData(data);
-            populateTable(filteredData);
-        }
-
-        // 테이블 열 클릭 시 정렬 함수
-        function sortTable(column, isAscending) {
-            const tbody = document.querySelector('#statsTable tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-        
-            rows.sort((a, b) => {
-                const aText = a.querySelector(`td:nth-child(${column})`).textContent.trim();
-                const bText = b.querySelector(`td:nth-child(${column})`).textContent.trim();
-        
-                const aValue = isNaN(parseFloat(aText)) ? aText.toLowerCase() : parseFloat(aText);
-                const bValue = isNaN(parseFloat(bText)) ? bText.toLowerCase() : parseFloat(bText);
-        
-                return isAscending ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
-            });
-        
-            rows.forEach(row => tbody.appendChild(row));
-        }
-
-        // 열 클릭 이벤트 핸들러
-        document.querySelectorAll('th').forEach((th, index) => {
+        document.querySelectorAll('#tableHeader th').forEach(th => {
             th.addEventListener('click', () => {
-                const isAscending = !th.classList.contains('sorted-asc');
-                document.querySelectorAll('th').forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
+                const table = th.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const index = Array.from(th.parentNode.children).indexOf(th);
+                const isAscending = th.classList.toggle('sorted-asc');
 
-                if (isAscending) {
-                    th.classList.add('sorted-asc');
-                } else {
+                if (!isAscending) {
+                    th.classList.remove('sorted-asc');
                     th.classList.add('sorted-desc');
+                    rows.sort((a, b) => b.children[index].textContent.localeCompare(a.children[index].textContent));
+                } else {
+                    th.classList.remove('sorted-desc');
+                    rows.sort((a, b) => a.children[index].textContent.localeCompare(b.children[index].textContent));
                 }
 
-                sortTable(index + 1, isAscending);
+                rows.forEach(row => tbody.appendChild(row));
             });
         });
 
-        // 데이터 가져와서 테이블에 넣기
-        fetchAndParseCSV(csvUrl).then(data => {
-            const filteredData = filterData(data);
-            populateTable(filteredData);
-        
-            document.querySelector('#teamFilter').addEventListener('change', () => applyFiltersAndSort(data));
-            document.querySelector('#PosFilter').addEventListener('change', () => applyFiltersAndSort(data));
-            document.querySelector('#plateAppearancesFilter').addEventListener('input', () => applyFiltersAndSort(data));
-            document.querySelector('#nameSearch').addEventListener('input', () => applyFiltersAndSort(data));
-        });
+        // 초기 데이터 로드
+        loadCSV('타자');
     </script>
-
 </body>
 </html>
-
-<script>
-    function adjustMainMargin() {
-        const headerHeight = document.querySelector('h1').offsetHeight;
-        const filterHeight = document.querySelector('.filter-container').offsetHeight;
-        const main = document.querySelector('main');
-        
-        main.style.marginTop = `${headerHeight + filterHeight + 10}px`;
-    }
-
-    // 페이지 로드 시 여백 조정
-    window.addEventListener('load', adjustMainMargin);
-
-    // 창 크기 조정 시 여백 조정
-    window.addEventListener('resize', adjustMainMargin);
-</script>
